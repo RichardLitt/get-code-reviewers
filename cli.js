@@ -3,6 +3,7 @@
 
 var meow = require('meow')
 var getCodeReviewers = require('./')
+var Promise = require('bluebird')
 
 var cli = meow([
   'Usage',
@@ -13,7 +14,11 @@ var cli = meow([
   '  RichardLitt'
 ])
 
-getCodeReviewers({
-  org: cli.input[0],
-  since: cli.input[1]
+Promise.try(function () {
+  return getCodeReviewers({
+    org: cli.input[0],
+    since: cli.input[1]
+  })
+}).map(function (response) {
+  console.log(response)
 })

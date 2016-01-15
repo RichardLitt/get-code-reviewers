@@ -69,9 +69,6 @@ module.exports = function (opts) {
     getPRCommenters(opts),
     function (codeCommenters, prCommenters) {
       var union = _.union(codeCommenters, prCommenters)
-      union.forEach(function (user) {
-        console.log(user)
-      })
       return union
     }
   )
