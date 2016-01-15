@@ -24,9 +24,7 @@ function getPRCommenters (opts) {
       page: 1,
       since: opts.since
     })
-  }).then(function (response) {
-    return _.flatten(response)
-  }).map(function (response) {
+  }).then(_.flatten.bind(_)).map(function (response) {
     if (moment(response.updatedAt).isAfter(opts.since)) {
       return response.user.login
     }
@@ -50,9 +48,7 @@ function getCodeCommenters (opts) {
       repoName: repo.name,
       page: 1
     })
-  }).then(function (response) {
-    return _.flatten(response)
-  }).map(function (response) {
+  }).then(_.flatten.bind(_)).map(function (response) {
     if (moment(response.updatedAt).isAfter(opts.since)) {
       return response.user.login
     }
