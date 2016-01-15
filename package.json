@@ -24,7 +24,18 @@
   "keywords": [
     "cli-app",
     "cli",
-    ""
+    "code",
+    "reviews",
+    "open source",
+    "OSS",
+    "github",
+    "comments",
+    "PR",
+    "pull request",
+    "comment",
+    "contributors",
+    "review",
+    "code review"
   ],
   "dependencies": {
     "bluebird": "^3.1.1",
