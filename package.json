@@ -1,6 +1,6 @@
 {
   "name": "get-code-reviewers",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Get users who comment on PRs or Code for OS GitHub Repos",
   "license": "MIT",
   "repository": "RichardLitt/get-code-reviewers",
