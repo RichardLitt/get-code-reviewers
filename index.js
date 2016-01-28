@@ -8,64 +8,61 @@ const Promise = require('bluebird')
 const moment = require('moment')
 const _ = require('lodash')
 const depaginate = require('depaginate')
+const getGithubUser = require('get-github-user')
 
-function getPRCommenters (opts) {
-  return Promise.resolve().then(function () {
-    return octo.orgs(opts.org).repos.fetch()
-  }).map(function (repo) {
-    return depaginate(function (opts) {
-      return octo.repos(opts.org, opts.repoName).pulls.comments.fetch({
-        since: opts.since,
-        page: opts.page
-      })
-    }, {
-      org: opts.org,
-      repoName: repo.name,
-      page: 1,
-      since: opts.since
-    })
-  }).then(_.flatten.bind(_)).map(function (response) {
-    if (moment(response.updatedAt).isAfter(opts.since)) {
-      return response.user.login
+module.exports = function (org, opts) {
+  return Promise.resolve(getGithubUser(org))
+  .then((user) => {
+    if (user.length === 0) {
+      throw new Error(org + 'is not a valid GitHub user')
+    } else {
+      return user
     }
-  }).then(function (response) {
-    return _.uniq(_.without(response, undefined))
-  }).catch(function (err) {
-    console.log('err', err)
   })
-}
-
-function getCodeCommenters (opts) {
-  return Promise.resolve().then(function () {
-    return octo.orgs(opts.org).repos.fetch()
-  }).map(function (repo) {
+  .map(user => {
     return depaginate(function (opts) {
-      return octo.repos(opts.org, opts.repoName).comments.fetch({
-        page: opts.page
-      })
+      return (opts.org.type === 'Organization') ? octo.orgs(org).repos.fetch(opts) : octo.users(org).repos.fetch(opts)
     }, {
-      org: opts.org,
-      repoName: repo.name,
-      page: 1
+      org: user
     })
-  }).then(_.flatten.bind(_)).map(function (response) {
-    if (moment(response.updatedAt).isAfter(opts.since)) {
-      return response.user.login
-    }
-  }).then(function (response) {
-    return _.uniq(_.without(response, undefined))
-  }).catch(function (err) {
-    console.log('err', err)
   })
-}
-
-module.exports = function (opts) {
-  return Promise.join(
-    getCodeCommenters(opts),
-    getPRCommenters(opts),
-    function (codeCommenters, prCommenters) {
-      var union = _.union(codeCommenters, prCommenters)
-      return union
+  .then(_.flatten.bind(_))
+  .filter(response => (opts.repo) ? response.name === opts.repo : response)
+  .map(repo => {
+    // TODO Add depaginate. These are not complete until this is added.
+    return Promise.join(
+      octo.repos(org, repo.name).comments.fetch({
+        org: org,
+        per_page: 100,
+        repoName: repo.name,
+        since: opts.since || '1980-01-01T00:01:02Z'
+      }),
+      octo.repos(org, repo.name).pulls.comments.fetch({
+        org: org,
+        per_page: 100,
+        repoName: repo.name,
+        since: opts.since || '1980-01-01T00:01:02Z'
+      }),
+      function (codeCommenters, prCommenters) {
+        var union = _.union(codeCommenters, prCommenters)
+        return union
+      })
+  })
+  .then(_.flatten.bind(_))
+  .filter(function (response) {
+    if (opts.since && opts.until && moment(response.updatedAt).isBetween(opts.since, opts.until)) {
+      return response
+    } else if (opts.since && !opts.until && moment(response.updatedAt).isAfter(opts.since)) {
+      return response
+    } else if (!opts.since && opts.until && moment(response.updatedAt).isBefore(opts.until)) {
+      return response
+    } else if (!opts.since && !opts.until) {
+      return response
     }
-  )
+  })
+  .map(response => response.user.login)
+  .then(response => _.uniq(_.without(response, undefined)))
+  .catch(err => {
+    console.log('Unable to get unique users', err)
+  })
 }

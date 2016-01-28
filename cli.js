@@ -5,20 +5,24 @@ var meow = require('meow')
 var getCodeReviewers = require('./')
 var Promise = require('bluebird')
 
-var cli = meow([
-  'Usage',
-  '  $ get-code-reviewers [org] [since]',
-  '',
-  'Examples',
-  '  $ get-code-reviewers ipfs 2016-01-15T00:20:24Z',
-  '  RichardLitt'
-])
+var cli = meow([`
+  Usage
+    $ get-code-reviewers <input> [opts]
+
+  Examples
+    $ get-code-reviewers ipfs --since=2016-01-15T00:20:24Z --until=2016-01-20T00:20:24Z
+    RichardLitt
+`, {
+  alias: {
+    s: 'since',
+    u: 'until',
+    r: 'repo'
+  }
+}])
 
 Promise.try(function () {
-  return getCodeReviewers({
-    org: cli.input[0],
-    since: cli.input[1]
-  })
-}).map(function (response) {
+  return getCodeReviewers(cli.input[0], cli.flags)
+})
+.map(function (response) {
   console.log(response)
 })

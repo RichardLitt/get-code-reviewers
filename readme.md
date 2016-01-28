@@ -15,12 +15,12 @@ $ npm install --save get-code-reviewers
 ## Usage
 
 ```js
-const getCodeReviewers = require('get-code-reviewers');
+const getCodeReviewers = require('get-code-reviewers')
 
-getCodeReviewers({
-    org: 'ipfs',
-    since: '2016-01-15T00:20:24Z'
-  });
+getCodeReviewers('ipfs', {
+    since: '2016-01-15T00:20:24Z',
+    until: '2016-01-20T00:20:24Z'
+  })
 //=> RichardLitt
 ```
 
@@ -29,7 +29,7 @@ getCodeReviewers({
 
 ### getCodeReviewers(options)
 
-#### options.org
+#### org
 
 Type: `string`
 
@@ -41,6 +41,12 @@ Type: `string`
 
 The ISO date from which to get comments that have been made.
 
+#### options.until
+
+Type: `string`
+
+The ISO date before which to get comments that have been made.
+
 ## CLI
 
 ```
@@ -51,10 +57,10 @@ $ npm install --global get-code-reviewers
 $ get-code-reviewers --help
 
   Usage
-    get-code-reviewers [org] [since]
+    get-code-reviewers <input> [opts]
 
   Examples
-    $ get-code-reviewers ipfs 2016-01-15T00:20:24Z
+    $ get-code-reviewers ipfs --since=2016-01-15T00:20:24Z --until=2016-01-20T00:20:24Z
     RichardLitt
 ```
 

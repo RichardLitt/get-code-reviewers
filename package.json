@@ -39,9 +39,10 @@
   ],
   "dependencies": {
     "bluebird": "^3.1.1",
-    "depaginate": "^0.0.3",
+    "depaginate": "^0.0.4",
+    "get-github-user": "0.0.2",
     "lodash": "^4.0.0",
-    "meow": "^3.6.0",
+    "meow": "^3.7.0",
     "moment": "^2.11.1",
     "octokat": "^0.4.15"
   },
@@ -53,5 +54,9 @@
     "ignores": [
       "test.js"
     ]
-  }
+  },
+  "coordinates": [
+    42.3890925,
+    -71.1201962
+  ]
 }
