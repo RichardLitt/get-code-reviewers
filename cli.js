@@ -9,6 +9,11 @@ var cli = meow([`
   Usage
     $ get-code-reviewers <input> [opts]
 
+  Options
+    -r, --repo A repository to search in
+    -s, --since Add a time since
+    -u, --until Add a time to
+
   Examples
     $ get-code-reviewers ipfs --since=2016-01-15T00:20:24Z --until=2016-01-20T00:20:24Z
     RichardLitt

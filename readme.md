@@ -35,6 +35,12 @@ Type: `string`
 
 The organization to scour for comments.
 
+#### options.repo
+
+Type: `string`
+
+The repository to get comments from.
+
 #### options.since
 
 Type: `string`
