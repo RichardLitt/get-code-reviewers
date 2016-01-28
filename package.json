@@ -1,6 +1,6 @@
 {
   "name": "get-code-reviewers",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Get users who comment on PRs or Code for OS GitHub Repos",
   "license": "MIT",
   "repository": "RichardLitt/get-code-reviewers",
@@ -56,7 +56,7 @@
     ]
   },
   "coordinates": [
-    42.3890925,
-    -71.1201962
+    42.3891304,
+    -71.12007
   ]
 }
