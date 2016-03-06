@@ -1,6 +1,6 @@
-import test from 'ava';
-import fn from './';
+import test from 'ava'
+// import fn from './'
 
-test('', t => {
+test('', (t) => {
 	// TODO Add tests
-});
+})

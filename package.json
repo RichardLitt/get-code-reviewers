@@ -38,17 +38,20 @@
     "code review"
   ],
   "dependencies": {
-    "bluebird": "^3.1.1",
-    "depaginate": "^0.0.4",
-    "get-github-user": "0.0.2",
-    "lodash": "^4.0.0",
+    "bluebird": "^3.3.3",
+    "depaginate": "^0.0.6",
+    "get-github-user": "0.0.4",
+    "ghauth": "^3.2.0",
+    "gitconfiglocal": "^2.0.1",
+    "lodash": "^4.6.1",
     "meow": "^3.7.0",
-    "moment": "^2.11.1",
-    "octokat": "^0.4.15"
+    "moment": "^2.11.2",
+    "octokat": "^0.4.17",
+    "pify": "^2.3.0"
   },
   "devDependencies": {
-    "standard": "^5.4.1",
-    "xo": "^0.12.1"
+    "standard": "^6.0.7",
+    "xo": "^0.13.0"
   },
   "standard": {
     "ignores": [

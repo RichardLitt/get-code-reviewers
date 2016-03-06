@@ -1,16 +1,26 @@
 'use strict'
 
 const Octokat = require('octokat')
-const octo = new Octokat({
-  token: process.env.GITHUB_OGN_TOKEN
-})
+var octo
 const Promise = require('bluebird')
 const moment = require('moment')
 const _ = require('lodash')
 const depaginate = require('depaginate')
 const getGithubUser = require('get-github-user')
 
-module.exports = function (org, opts) {
+module.exports = function (org, opts, token) {
+  octo = new Octokat({
+    token: token || process.env.GITHUB_OGN_TOKEN
+  })
+
+  if (opts.since && !moment(opts.since).isValid()) {
+    throw new Error('\'since\' flag is an invalid date.')
+  }
+
+  if (opts.until && !moment(opts.until).isValid()) {
+    throw new Error('\'until\' flag is an invalid date.')
+  }
+
   return Promise.resolve(getGithubUser(org))
   .then((user) => {
     if (user.length === 0) {
@@ -19,7 +29,7 @@ module.exports = function (org, opts) {
       return user
     }
   })
-  .map(user => {
+  .map((user) => {
     return depaginate(function (opts) {
       return (opts.org.type === 'Organization') ? octo.orgs(org).repos.fetch(opts) : octo.users(org).repos.fetch(opts)
     }, {
@@ -27,21 +37,26 @@ module.exports = function (org, opts) {
     })
   })
   .then(_.flatten.bind(_))
-  .filter(response => (opts.repo) ? response.name === opts.repo : response)
-  .map(repo => {
-    // TODO Add depaginate. These are not complete until this is added.
+  .filter((response) => (opts.repo) ? response.name === opts.repo : response)
+  .map((repo) => {
     return Promise.join(
-      octo.repos(org, repo.name).comments.fetch({
+      depaginate(function (opts) {
+        return octo.repos(opts.org, opts.repoName).comments.fetch(opts)
+      }, {
         org: org,
-        per_page: 100,
         repoName: repo.name,
-        since: opts.since || '1980-01-01T00:01:02Z'
+        // Weird issue with since being mandatory. TODO Check?
+        since: opts.since || '1980-01-01T00:01:01Z',
+        per_page: 100
       }),
-      octo.repos(org, repo.name).pulls.comments.fetch({
+      depaginate(function (opts) {
+        return octo.repos(opts.org, opts.repoName).pulls.comments.fetch(opts)
+      }, {
         org: org,
-        per_page: 100,
         repoName: repo.name,
-        since: opts.since || '1980-01-01T00:01:02Z'
+        // Weird issue with since being mandatory. TODO Check?
+        since: opts.since || '1980-01-01T00:01:01Z',
+        per_page: 100
       }),
       function (codeCommenters, prCommenters) {
         var union = _.union(codeCommenters, prCommenters)
@@ -60,9 +75,14 @@ module.exports = function (org, opts) {
       return response
     }
   })
-  .map(response => response.user.login)
-  .then(response => _.uniq(_.without(response, undefined)))
-  .catch(err => {
-    console.log('Unable to get unique users', err)
+  .map((response) => {
+    if (response.user && response.user.login) {
+      return response.user.login
+    }
+  })
+  .then((response) => _.uniq(_.without(response, undefined)))
+  .catch((err) => {
+    console.log('err', err)
+    console.trace()
   })
 }
