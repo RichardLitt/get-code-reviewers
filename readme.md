@@ -1,5 +1,7 @@
 # get-code-reviewers [![Build Status](https://travis-ci.org/RichardLitt/get-code-reviewers.svg?branch=master)](https://travis-ci.org/RichardLitt/get-code-reviewers)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/RichardLitt/get-code-reviewers.svg)](https://greenkeeper.io/)
+
 > Get users who comment on PRs or Code for OS GitHub Repos
 
 This module returns a list of GitHub usernames who have commented on code or on PRs.
