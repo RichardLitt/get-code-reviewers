@@ -28,13 +28,13 @@ var cli = meow([`
     RichardLitt
     $ get-code-reviewers ipfs --since=2016-01-15T00:20:24Z --until=2016-01-20T00:20:24Z
     RichardLitt
-`, {
+`], {
   alias: {
     s: 'since',
     u: 'until',
     r: 'repo'
   }
-}])
+})
 
 Promise.try(() => {
   return pify(gitconfig)(process.cwd())
