@@ -19,9 +19,9 @@ var cli = meow([`
     $ get-code-reviewers [input]
 
   Options
-    -r, --repo Only for a specific repo. [Default: false]
-    -s, --since Only since a specific time. [Default: false]
-    -u, --until Only to a specific time. [Default: false]
+    -r, --repo  Only for a specific repo.
+    -s, --since Only since a specific time.
+    -u, --until Only to a specific time.
 
   Examples
     $ get-code-reviewiers
